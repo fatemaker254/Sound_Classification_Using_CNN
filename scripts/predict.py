@@ -1,33 +1,33 @@
 import joblib
 import numpy as np
-import tensorflow as tf
+from tensorflow.keras.preprocessing import image
 
 
-def load_model(model_path):
-    return joblib.load(model_path)
-
-
-def preprocess_image(image_path):
-    img = tf.keras.preprocessing.image.load_img(image_path, target_size=(128, 128))
-    img_array = tf.keras.preprocessing.image.img_to_array(img)
+def load_and_preprocess_image(img_path, target_size=(128, 128)):
+    img = image.load_img(img_path, target_size=target_size)
+    img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
-    img_array = img_array / 255.0
+    img_array /= 255.0
     return img_array
 
 
-def predict_image(model, image_path):
-    img_array = preprocess_image(image_path)
-    prediction = model.predict(img_array)
-    return "Elephant" if prediction[0] > 0.5 else "Not Elephant"
+# Load the trained model
+model = joblib.load("elephant_sound_classifier.joblib")
 
+# Path to the new spectrogram image
+new_image_path = r"E:\SOUNDCLASSIFICATIONCNN\scripts\rumble_8859.8440_8861.5440.png"
 
-# Example usage
-if __name__ == "__main__":
-    model_path = "elephant_sound_classifier.joblib"
-    new_image_path = (
-        r"E:\SOUNDCLASSIFICATIONCNN\dataset\elephant\rumble_8585.3320_8592.1670.png"
-    )
-    # new_image_path = r"E:\SOUNDCLASSIFICATIONCNN\scripts\rumble_8859.8440_8861.5440.png"
-    model = load_model(model_path)
-    result = predict_image(model, new_image_path)
-    print(f"The sound is: {result}")
+# Preprocess the image
+img_array = load_and_preprocess_image(new_image_path)
+
+# Make prediction
+prediction = model.predict(img_array)
+print("Prediction:", prediction)
+
+if prediction[0][0] > 0.5:
+    print("The sound is NOT an elephant sound.")
+else:
+    print("The sound is an elephant sound.")
+
+# # r"E:\SOUNDCLASSIFICATIONCNN\scripts\mixkit-angry-dragon-growl-309.png"-not elephant
+# E:\SOUNDCLASSIFICATIONCNN\scripts\rumble_8859.8440_8861.5440.png"-elephant
