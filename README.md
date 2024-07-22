@@ -2,6 +2,10 @@
 
 ## Step1
 Clone the repo
+
+Create an environment using ```python -m venv venv```
+Activate the Environment using  ```venv\Scripts\activate```
+
 Install the requirements
 ```pip install -r requirements.txt```
 
